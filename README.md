@@ -9,6 +9,8 @@ A handheld oil lamp with a projected light source.
 - Currently occupies a weapon slot
 - Not compatible with other mods
 ## Credits
+Obsttorte 
+
 [Dragofer](https://forums.thedarkmod.com/index.php?/topic/17084-dragofers-stuff/)
 
 Amadeus
