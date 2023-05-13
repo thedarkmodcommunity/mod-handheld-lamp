@@ -1,0 +1,117 @@
+// vim:ts=4:sw=4:cindent
+//
+// ======================== Playerlamp ==================================
+//
+
+entityDef mod:weapon_playerlamp
+{
+    "inherit"				"atdm:weapon_base"
+
+	"editor_usage"          "Handheld oil lamp"
+    "editor_displayFolder"  "Weapons/Melee"
+
+	"model_view" 			"mod:viewmodel_lantern"
+    
+    // a unique weapon name, used by ammunition entities
+    "inv_weapon_name"       "mod_playerlamp"
+
+    // The display name of this weapon (for the HUD)
+    "inv_name"              "Oil Lamp"
+    "inv_icon"              "guis/assets/hud/weapon_icons/mod_playerlamp_icon.dds"
+
+    "model"                 ""
+    "clipmodel"	            ""
+    "spawnclass"            "idMoveable"
+    "frobable"              "0"
+
+	"is_weapon_melee"		"0"
+	"is_weapon_ranged"		"0"
+
+    "ammo_required"         "0"
+
+    // add levels to the lightgem when this weapon is drawn
+	"inv_lgmodifier"		"25"
+
+    "weapon_scriptobject"   "mod_weapon_playerlamp"
+
+    // Attachment entity for melee combat
+	"def_attach1"			"mod:attachment_playerlamp"
+	"name_attach1"			"meleeweap_r"
+}
+
+model mod:viewmodel_lantern
+{
+	mesh			models/md5/weapons/broadsword/empty_hand.md5mesh
+	offset			(-10 0 -6.5 )
+
+	anim idle	models/md5/weapons/mod_playerlamp/idle.md5anim
+	{
+		frame 1		sound_weapon blackjack_sheath
+		frame 12	melee_hold
+	}
+
+	anim putaway   models/md5/weapons/mod_playerlamp/putaway.md5anim
+	{
+		frame 1		sound_weapon blackjack_sheath
+	}
+}
+
+// new melee system
+entityDef mod:attachment_playerlamp
+{
+	"inherit"				"mod:playerlamp_model"
+	"spawnclass" 			"CMeleeWeapon"
+//	"joint"					"r_wrist"
+	"joint"					"sword"
+	// ? roll/yaw pitch
+
+	"angles"				"180 10 10"
+//	"origin"				"-4 4 5"
+	"origin"				"-3 2 5"
+
+	"hide"					"0"
+	"solid"					"0"
+	// necessary?
+	"clipmodel_contents" 	"0"
+	"frobable"				"0"
+	"neverShow" 			"0" // grayman #2998 - never show this entity
+	"noshadows" 			"1" // grayman #2998
+}
+
+entityDef mod:playerlamp_model
+{
+	"inherit"				"atdm:moveable_weapon_base_animations"
+	"model"					"models/darkmod/weapons/mod_playerlamp_model.lwo"
+//	"clipmodel"				"models/clip.ase"
+	"def_attach"			"mod:playerlamp_light"
+	"pos_attach"			"Origin"
+	"def_attach1"			"mod:playerlamp_haze"
+	"pos_attach1"			"Origin2"
+	"attach_pos_name_1"		"Origin2"
+	"name_attach1"			"Origin2"
+	"attach_pos_origin_1"	"0 0 0"
+	"attach_pos_angles_1"	"0 0 -90"
+	"drawSortOffset"		"103"
+
+	"snd_silence"			"silence"
+}
+
+entityDef mod:playerlamp_light
+{
+	"inherit"			"light"
+//	"_color"			"0.875 0.820 0.535"
+	"_color"			"0.855 0.839 0.796"
+	"light_right"		"256 0 0"
+	"light_target"		"0 500 0"
+	"light_up"			"0 0 256"
+	"shaderParm7"		"1"
+	"texture"			"lights/mod_mtr_playerlamp_light"
+//	"start_off"			"1"
+}
+
+entityDef mod:playerlamp_haze
+{
+	"inherit"			"func_static"
+	"model"				"mod_prt_playerlamp_haze.prt"
+}
+

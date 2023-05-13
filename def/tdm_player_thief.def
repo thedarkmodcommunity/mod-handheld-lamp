@@ -1,0 +1,956 @@
+// vim:ts=4:sw=4:cindent
+/***********************************************************************
+
+TDM single player model and its related entities.
+
+***********************************************************************/
+
+model model_player_thief {
+
+	//offset								( 0 0 1 )
+
+	mesh								models/md5/chars/thief/tdm_ai_thief.md5mesh
+
+    channel torso		( *Spine1 )
+    channel legs		( *origin - *Spine )
+
+	anim af_pose						models/md5/chars/thief/af_pose.md5anim
+	anim ik_pose						models/md5/chars/thief/af_pose.md5anim
+	anim initial						models/md5/chars/thief/af_pose.md5anim
+
+	anim idle							models/md5/chars/thief/idle.md5anim
+
+	anim crouch_down					models/md5/chars/thief/crouch_down.md5anim
+
+	anim crouch							models/md5/chars/thief/crouch_idle.md5anim
+	anim crouch_up					    models/md5/chars/thief/crouch_up.md5anim
+
+
+	anim crouch_walk					models/md5/chars/thief/crouch.md5anim
+	anim crouch_walk_backwards			models/md5/chars/thief/crouch_backwards.md5anim
+	anim walk							models/md5/chars/thief/walk.md5anim
+	anim walk_backwards					models/md5/chars/thief/walk_backwards.md5anim
+	anim walk_strafe_left				models/md5/chars/thief/walk_strafe_left.md5anim
+	anim walk_strafe_right				models/md5/chars/thief/walk_strafe_right.md5anim
+	
+        anim run_forward					models/md5/chars/thief/run.md5anim
+
+
+	anim run_backwards					models/md5/chars/thief/run_backwards.md5anim
+	{
+		prevent_idle_override
+	}
+	anim run_strafe_left				models/md5/chars/thief/run_strafe_left.md5anim
+	anim run_strafe_right				models/md5/chars/thief/run_strafe_right.md5anim
+
+	/**
+	* DarkMod Creep animations:
+	**/
+
+	anim creep_forward					models/md5/chars/thief/creep_forward.md5anim
+	anim creep_backwards				models/md5/chars/thief/creep_backwards.md5anim
+	anim creep_strafe_left				models/md5/chars/thief/creep_strafe_left.md5anim
+	anim creep_strafe_right				models/md5/chars/thief/creep_strafe_right.md5anim
+
+	/**
+	* DarkMod Crouch Run and Crouch Creep Animations
+	**/
+
+	anim crouch_creep					models/md5/chars/thief/crouch_creep.md5anim
+	anim crouch_creep_backwards			models/md5/chars/thief/crouch_creep_backwards.md5anim
+	anim crouch_run						models/md5/chars/thief/crouch.md5anim
+	anim crouch_run_backwards			models/md5/chars/thief/crouch_backwards.md5anim
+
+	/**
+	* DarkMod Lean Animations
+	**/
+
+    anim lean_forward           models/md5/chars/thief/lean_f.md5anim
+
+    anim lean_right             models/md5/chars/thief/lean_r.md5anim
+    anim lean_left              models/md5/chars/thief/lean_l.md5anim
+
+	/*************************************************************/
+
+    anim jump							models/md5/chars/thief/jump.md5anim {
+		prevent_idle_override
+
+
+
+	}
+anim run_jump					models/md5/chars/thief/jump.md5anim {
+		prevent_idle_override
+		
+	}
+    anim soft_land						models/md5/chars/thief/soft_land.md5anim {
+		prevent_idle_override
+	}
+	anim hard_land						models/md5/chars/thief/hard_land.md5anim {
+		prevent_idle_override
+	}
+	anim fall							models/md5/chars/thief/hard_land.md5anim {
+		prevent_idle_override
+	}
+	anim turn_left						models/md5/chars/thief/turn_left.md5anim {
+		prevent_idle_override
+	}
+	anim turn_right						models/md5/chars/thief/turn_right.md5anim  {
+		prevent_idle_override
+	}
+/**	anim pain							models/md5/chars/thief/painchest.md5anim {
+		prevent_idle_override
+	}
+	anim pain_head						models/md5/chars/thief/painhead.md5anim {
+		prevent_idle_override
+	}
+
+	anim pain_right_arm					models/md5/chars/thief/painrightarm.md5anim {
+		prevent_idle_override
+	}
+
+	anim pain_left_arm					models/md5/chars/thief/painleftarm.md5anim {
+		prevent_idle_override
+	}
+
+	anim pain_chest						models/md5/chars/thief/painchest.md5anim {
+		prevent_idle_override
+	} **/
+}
+
+/***********************************************************************
+
+ atdm:player_base
+
+***********************************************************************/
+
+entityDef atdm:player_base {
+	"inherit"						"atdm:entity_base"
+	"spawnclass"					"idPlayer"
+	"scriptobject"					"player"
+	"ragdoll"						"guard_base"
+
+	"editor_displayFolder"			"Internal"
+	"editor_usage"					"Base class for the player, defining default values."
+
+	"hud"							"guis/tdm_hud.gui"
+	"mphud"							"guis/mphud.gui"
+	"cursor"						"guis/cursor.gui"
+
+	"editor_float blink_min"		"Minimum time between eye blinking, in seconds."
+	"editor_float blink_max"		"Maximum time between eye blinking, in seconds."
+	"blink_min"						"2.5"
+	"blink_max"						"8.0"
+	
+	// It's a person
+	"AIUse"							"AIUSE_PERSON"
+	// It's a Thief!
+	"personType"					"PERSONTYPE_THIEF"
+
+    "editor_var def_weapon"			"Points to the entity that represents the weapon for slot X. Example: def_weapon0."
+
+	// Player weapons (the integer index is important)
+    "def_weapon0"                   "atdm:weapon_unarmed"
+    "def_weapon1"                   "atdm:weapon_blackjack"
+    "def_weapon2"                   "atdm:weapon_shortsword"
+	"def_weapon3"                   "atdm:weapon_broadhead"
+    "def_weapon4"                   "atdm:weapon_waterarrow"
+    "def_weapon5"                   "atdm:weapon_firearrow"
+    "def_weapon6"                   "atdm:weapon_ropearrow"
+    "def_weapon7"                   "atdm:weapon_gasarrow"
+    "def_weapon8"                   "atdm:weapon_noisemaker"
+    "def_weapon9"                   "atdm:weapon_mossarrow" // grayman #2787
+	"def_weapon10"                  "atdm:weapon_vinearrow" // grayman #2787
+	"def_weapon11"                  "mod:weapon_playerlamp"
+
+
+	"pm_jumpheight"						"48"
+	"pm_stepsize"						"16"
+	//"pm_crouchspeed"					"80"
+	"pm_walkspeed"						"60"
+	//"pm_runspeed"						"220"
+	"pm_noclipspeed"					"200"
+	"pm_minviewpitch"					"-89"	// looking up
+	"pm_maxviewpitch"					"89"	// looking down
+	"pm_crouchheight"				"38"
+	"pm_crouchviewheight"				"34"
+	
+	"pm_mantle_minflatness"			"0.707" // can't mantle on anything steeper than 45 degrees; see cvar description
+
+	// material dependent climbing speeds (fraction of walk speed):
+	"climb_max_speed_vert_default"			"0.5"
+	"climb_max_speed_horiz_default"			"2.3" // needs to be high for some reason
+
+	"pm_normalheight"				"74"
+	"pm_normalviewheight"				"68"
+	"pm_deadheight"					"20"
+	"pm_deadviewheight"				"10"
+	"pm_crouchrate"					"0.87"
+	"pm_bboxwidth"					"32"
+      
+	// movement settings
+
+	"pm_bobroll" 				"0.0015" //side to side roll
+	"pm_bobpitch" 				"0.001" //forward roll
+	"pm_bobup" 					"0.03"  //upward bounce
+	"pm_runroll" 				"0.003" //running side roll
+	"pm_runpitch" 				"0.001" //run forward pitch
+	"pm_runbob" 				"0.35" //speed of run bob
+	"pm_walkbob" 				"0.3" //speed of walk bob
+	"pm_crouchbob" 				"0.2"	//speed of crouch bob
+	
+	"pm_modelview"					"0"	// 0 == normal, 1 == view inside model, 2 == view inside model when dead
+	"pm_usecylinder"				"1"  	// 0 == default, 1 == use cylinder approximation for bounding box.  Needed for Dark Mod
+
+	"editor_float pain_delay"	"How long to wait before playing pain sound, in seconds."
+
+	"pain_delay"					"0.5"
+	"respawn_delay"					"1.7"	// minimum delay for respawning after death
+
+	// stats
+	"editor_int maxhealth"		"The maximum health the player can have."
+	"health"					"100"
+	"maxhealth"					"100"
+
+	"editor_float collision_damage_threshold_min"	"Collision damage below this value is ignored."
+	"collision_damage_threshold_min"	"5"
+
+	"editor_float collision_damage_threshold_hard"	"Collision damage above this value is considered 'hard'."
+	"collision_damage_threshold_hard"	"25"
+
+	"mouth_offset"				"0 0 15" // grayman #1488
+	"eye_offset"				"0 0 19" // grayman #3525
+
+	"stamina"					"120"
+	"armor"						"0"
+	"maxarmor"					"125"
+
+	// player is always considered an objective ent for end mission location goals
+	"objective_ent"					"1"
+
+	// Don't spawn moss-blobs on the player entity
+	"nomoss"							"1"
+
+	// ishtvan: I'm not sure why this was set to 0 but it wants to be 1 for melee
+	// "bleed"								"0"
+	"bleed"								"1"
+
+	// don't let arrows stick out of the player, looks... awkward
+	"arrowsticking_disabled"			"1"
+
+	"bone_focus"						"headcontrol"
+	"bone_leftEye"						"Leyeaim"
+	"bone_rightEye"						"Reyeaim"
+	"bone_hips"							"Spine"
+	"bone_chest"						"Spine2"   // AI aim location
+	"bone_head"						"Head"// AI aim location
+
+	"damage_zone head"					"*Neck"
+	"damage_zone chest"					"*Spine1 -*Neck"
+	"damage_zone left_arm"					"*LeftArm"
+	"damage_zone right_arm"					"*RightArm"
+	"damage_zone legs"					"origin Spine"
+	"damage_scale head"					"1"
+
+	"ik_numLegs"						"2"
+	"ik_minWaistAnkleDist"					"16"
+	"ik_footSize"						"4"
+	"ik_waist"						"Hips"
+	"ik_hip1"						"LeftUpLeg"
+	"ik_hip2"						"RightUpLeg"
+	"ik_knee1"						"LeftLeg"
+	"ik_knee2"						"RightLeg"
+	"ik_ankle1"						"LeftFoot"
+	"ik_ankle2"						"RightFoot"
+	//normally a knee joint
+	//"ik_dir1"						"LeftFoot"
+	//"ik_dir2"						"RightFoot"
+	"ik_foot1"						"LeftToeBase"
+	"ik_foot2"						"RightToeBase"
+
+	"ik_numArms"						"2"
+	"ik_shoulder1"						"RightArm"
+	"ik_shoulder2"						"LeftArm"
+	"ik_elbroadhead1"					"RightForeArm"
+	"ik_elbroadhead2"					"LeftForeArm"
+	"ik_hand1"						"RightHand"
+	"ik_hand2"						"LeftHand"
+
+	"snd_climb_vert_default"			"movement_ladder"
+	"snd_climb_horiz_default"			"movement_ladder"
+	"snd_climb_vert_metal"				"movement_ladder"
+	"snd_climb_horiz_metal"			"movement_ladder"
+	"snd_climb_vert_foliage"			"tdm_footstep_grass_crouch_walk"
+	"snd_climb_horiz_foliage"			"tdm_footstep_grass_crouch_walk"
+	"snd_climb_vert_rope"				"climb_rope_hemp"
+	"snd_climb_horiz_rope"				"climb_rope_hemp"
+	"snd_climb_vert_chain"				"climb_chain"
+	"snd_climb_horiz_chain"				"climb_chain"
+	"snd_climb_vert_wood"				"movement_ladder_wood"
+	"snd_climb_horiz_wood"				"movement_ladder_wood"
+	"snd_climb_vert_nosound"			"nosound"
+	"snd_climb_horiz_nosound"			"nosound"
+	
+	"snd_climb_slide_default"			"movement_climb_slide"
+
+	"snd_rope_climb"					"climb_rope_hemp"
+	"snd_drop_item_failed"				"drop_item_failed"
+	
+
+	"snd_death"							"tdm_player_die"
+	"snd_death_liquid"					"tdm_player_drown"
+
+	"snd_pain_small"					"tdm_player_damage_hphigh"
+	"snd_pain_medium"					"tdm_player_damage_hphigh"
+	"snd_pain_large"					"tdm_player_damage_hplow"
+	"snd_pain_huge"						"tdm_player_damage_hplow"
+
+	"snd_damage_land_soft"				"tdm_player_damage_softlanding" 
+	"snd_damage_land_hard"				"tdm_player_damage_hardlanding" 
+	//"snd_doublevision"					"player_sounds_doublevision"
+	"snd_thud"							"player_sounds_thud"
+	"snd_heartbeat"						"player_sounds_heartbeat"
+	"snd_heartbeat_dying"				"player_sounds_heartbeat_dying"
+	//"snd_skipcinematic"					"player_sounds_skipcinematic"
+	//"snd_guienter"						"player_sounds_guienter"
+	//"snd_guiexit"						"player_sounds_guiexit"
+	"snd_healthpulse"					"nosound"
+	//"snd_hitArmor"						"player_sounds_hitArmor"
+	//"snd_hitFlesh"						"player_sounds_hitFlesh"
+
+	"snd_airGasp"						"tdm_player_drown"
+	"snd_resurface"						"tdm_player_deepbreath"
+
+	"snd_noAir"							"tdm_player_submerge"
+	//"snd_teleport_exit"					"player_sounds_teleportExit"
+	//"snd_teleport_start"					"player_sounds_teleportStart"
+	"snd_burn"							"tdm_player_damage_fire"
+	"snd_healthtake"					""
+
+	"snd_mission_start"					"mission_start"
+	"snd_new_objective"					"mission_new_objective"
+    "snd_objective_complete"			"mission_objective"
+	"snd_objective_failed"				"mission_objective_failed"
+
+	"editor_snd snd_shoulder_body"	"Sound played when the player shoulders a body."
+	"editor_snd snd_shoulder_body_heavy"	"Sound played when the player shoulders a heavy body."
+	"snd_shoulder_body"				"tdm_player_pickup_body"
+	"snd_shoulder_body_heavy"		"tdm_player_pickup_body_fat"
+
+	"snd_player_sigh"			"tdm_player_sigh"
+	"snd_player_cough"			"tdm_player_cough"
+	"snd_player_choke_gas"		"tdm_player_choke_gas"
+	
+	// stifu #3550 - sounds for uneven swimming speed bursts
+	"snd_swim_burst_run"				"tdm_swim_burst_run"
+	"snd_swim_burst_walk"				"tdm_swim_burst"
+	"snd_swim_burst_creep"				"tdm_swim_burst_creep"
+	"snd_swim_burst_run_underwater"		"tdm_swim_burst_underwater_run"
+	"snd_swim_burst_walk_underwater"	"tdm_swim_burst_underwater"
+	"snd_swim_burst_creep_underwater"	"tdm_swim_burst_underwater"
+
+	// grayman #3010 - mantling sounds
+	"snd_player_mantle_pull"			"tdm_player_mantle_pull"
+	"snd_player_mantle_push"			"tdm_player_mantle_push"
+	"snd_player_mantle_cancel"			"drop_item_failed"
+	
+	// STiFU #4947 - mantling impact sounds
+	"snd_player_mantle_rustle"  		"tdm_player_mantle_rustle"
+	"snd_player_mantle_rustle_short"	"tdm_player_mantle_rustle_short"
+	"snd_player_mantle_impact"			"tdm_player_mantle_impact"
+	"snd_player_mantle_impact_subtle"	"tdm_player_mantle_impact_subtle"
+
+	// grayman #3026 - tired sounds for bow animation
+	"snd_player_tired"			"tdm_player_tired"
+	
+	// material specific footsteps (DarkMod SFX)
+	//"editor_snd snd_footstep"	"Sound played when the player makes a step on the specified surface."
+
+    // greebo: The following movetype-dependent footstep shaders are used 
+    // when the CVAR tdm_footfall_sounds_movetype_specific is set to "1" (the default)
+    // although there are a lot of shaders, they actually refer to a small set of sound files.
+    // Otherwise the fallback shader "snd_footstep_<material>" is taken.
+
+    // Dirt variations
+	"snd_footstep_dirt_walk"		    "tdm_footstep_dirt_walk"
+	"snd_footstep_dirt_run"			    "tdm_footstep_dirt_run"
+	"snd_footstep_dirt_creep"		    "tdm_footstep_dirt_walk_creep"
+	"snd_footstep_dirt_crouch_walk"	    "tdm_footstep_dirt_crouch_walk"
+	"snd_footstep_dirt_crouch_run"	    "tdm_footstep_dirt_crouch_run"
+	"snd_footstep_dirt_crouch_creep"    "tdm_footstep_dirt_crouch_creep"
+    "snd_jump_dirt"				        "tdm_footstep_dirt_jump_land"
+
+    // Sand is using "dirt" sounds
+	"snd_footstep_sand_walk"		    "tdm_footstep_dirt_walk"
+	"snd_footstep_sand_run"			    "tdm_footstep_dirt_run"
+	"snd_footstep_sand_creep"		    "tdm_footstep_dirt_walk_creep"
+	"snd_footstep_sand_crouch_walk"	    "tdm_footstep_dirt_crouch_walk"
+	"snd_footstep_sand_crouch_run"	    "tdm_footstep_dirt_crouch_run"
+	"snd_footstep_sand_crouch_creep"    "tdm_footstep_dirt_crouch_creep"
+    "snd_jump_sand"				        "tdm_footstep_dirt_jump_land"
+	
+    // Grass variations
+	"snd_footstep_grass_walk"		    "tdm_footstep_grass_walk"
+	"snd_footstep_grass_run"			"tdm_footstep_grass_run"
+	"snd_footstep_grass_creep"		    "tdm_footstep_grass_walk_creep"
+	"snd_footstep_grass_crouch_walk"	"tdm_footstep_grass_crouch_walk"
+	"snd_footstep_grass_crouch_run"	    "tdm_footstep_grass_crouch_run"
+	"snd_footstep_grass_crouch_creep"   "tdm_footstep_grass_crouch_creep"
+    "snd_jump_grass"				    "tdm_footstep_grass_jump_land"
+
+    // Straw is using "grass" sounds
+	"snd_footstep_straw_walk"		    "tdm_footstep_grass_walk"
+	"snd_footstep_straw_run"			"tdm_footstep_grass_run"
+	"snd_footstep_straw_creep"		    "tdm_footstep_grass_walk_creep"
+	"snd_footstep_straw_crouch_walk"	"tdm_footstep_grass_crouch_walk"
+	"snd_footstep_straw_crouch_run"	    "tdm_footstep_grass_crouch_run"
+	"snd_footstep_straw_crouch_creep"   "tdm_footstep_grass_crouch_creep"
+    "snd_jump_straw"				    "tdm_footstep_grass_jump_land"
+
+    // Stone variations
+	"snd_footstep_stone_walk"		    "tdm_footstep_stone_walk"
+	"snd_footstep_stone_run"			"tdm_footstep_stone_run"
+	"snd_footstep_stone_creep"		    "tdm_footstep_stone_walk_creep"
+	"snd_footstep_stone_crouch_walk"	"tdm_footstep_stone_crouch_walk"
+	"snd_footstep_stone_crouch_run"	    "tdm_footstep_stone_crouch_run"
+	"snd_footstep_stone_crouch_creep"   "tdm_footstep_stone_crouch_creep"
+    "snd_jump_stone"				    "tdm_footstep_stone_jump_land"
+	
+    // Tile variations
+	"snd_footstep_tile_walk"		    "tdm_footstep_tile_walk"
+	"snd_footstep_tile_run"			    "tdm_footstep_tile_run"
+	"snd_footstep_tile_creep"		    "tdm_footstep_tile_walk_creep"
+	"snd_footstep_tile_crouch_walk"	    "tdm_footstep_tile_crouch_walk"
+	"snd_footstep_tile_crouch_run"	    "tdm_footstep_tile_crouch_run"
+	"snd_footstep_tile_crouch_creep"    "tdm_footstep_tile_crouch_creep"
+    "snd_jump_tile"				        "tdm_footstep_tile_jump_land"
+
+    // Puddle (Water) variations
+	"snd_footstep_puddle_walk"		    "tdm_footstep_water_walk"
+	"snd_footstep_puddle_run"			"tdm_footstep_water_run"
+	"snd_footstep_puddle_creep"		    "tdm_footstep_water_walk_creep"
+	"snd_footstep_puddle_crouch_walk"	"tdm_footstep_water_crouch_walk"
+	"snd_footstep_puddle_crouch_run"	"tdm_footstep_water_crouch_run"
+	"snd_footstep_puddle_crouch_creep"  "tdm_footstep_water_crouch_creep"
+    "snd_jump_puddle"			        "tdm_footstep_water_jump_land"
+    
+    // Liquid (water) variations    -- SteveL #3693
+	"snd_footstep_liquid_walk"		    "tdm_footstep_water_walk"
+	"snd_footstep_liquid_run"			"tdm_footstep_water_run"
+	"snd_footstep_liquid_creep"		    "tdm_footstep_water_walk_creep"
+	"snd_footstep_liquid_crouch_walk"	"tdm_footstep_water_crouch_walk"
+	"snd_footstep_liquid_crouch_run"	"tdm_footstep_water_crouch_run"
+	"snd_footstep_liquid_crouch_creep"  "tdm_footstep_water_crouch_creep"
+    "snd_jump_liquid"			        "tdm_footstep_water_jump_land"
+    
+    // Wood variations
+	"snd_footstep_wood_walk"		    "tdm_footstep_wood_walk"
+	"snd_footstep_wood_run"			    "tdm_footstep_wood_run"
+	"snd_footstep_wood_creep"		    "tdm_footstep_wood_walk_creep"
+	"snd_footstep_wood_crouch_walk"	    "tdm_footstep_wood_crouch_walk"
+	"snd_footstep_wood_crouch_run"	    "tdm_footstep_wood_crouch_run"
+	"snd_footstep_wood_crouch_creep"    "tdm_footstep_wood_crouch_creep"
+    "snd_jump_wood"			            "tdm_footstep_wood_jump_land"
+
+	// Metal variations - we don't have move-type specific metal sounds right now
+	"snd_footstep_metal_walk"		    "tdm_footstep_metal_walk"
+	"snd_footstep_metal_run"			"tdm_footstep_metal_run"
+	"snd_footstep_metal_creep"		    "tdm_footstep_metal_walk_creep"
+	"snd_footstep_metal_crouch_walk"	"tdm_footstep_metal_crouch_walk"
+	"snd_footstep_metal_crouch_run"	    "tdm_footstep_metal_crouch_run"
+	"snd_footstep_metal_crouch_creep"   "tdm_footstep_metal_crouch_creep"
+    "snd_jump_metal"			        "tdm_footstep_metal_jump_land"
+
+    // Don't have a full set of carpet yet
+    "snd_footstep_carpet"		"tdm_footstep_carpet"
+    "snd_jump_carpet"		"human_carpet_jump"
+    
+
+	"snd_footstep_puddle"	"movement_water"
+	"snd_footstep_wading"	"movement_water"
+
+	// swim sound goes here
+	"snd_footstep_swim"		""            // this doesn't appear to do anything?  =Springheel
+
+    // default sounds
+
+       "snd_footstep_gravel"		"human_gravel"
+	"snd_footstep_glass"		"human_glass"
+	"snd_footstep_snow"			"human_snow"
+	"snd_footstep_ice"			"human_ice"
+	"snd_footstep_cloth"		"human_carpet"
+	"snd_footstep_armor_leath"	"human_carpet"
+	"snd_footstep_flesh"		"human_mud"
+	"snd_footstep_moss"			"human_carpet"
+        "snd_footstep_foliage"		"tdm_footstep_foliage"
+        "snd_footstep_foliage_run"      "tdm_footstep_foliage_run"  // this is not doing anything?  Player actually plays human_foliage sound when running for some reason
+
+    // there is no default for jump sounds, so all necessary materials need their own sound
+    "snd_jump_wading"	    "movement_water_jump"
+	"snd_jump_gravel"		"human_gravel_jump"
+	"snd_jump_glass"		"human_glass_jump"
+	"snd_jump_snow"			"human_snow_jump"
+	"snd_jump_ice"			"human_ice_jump"
+        	"snd_jump_slate"	"tdm_footstep_stone_jump_land"
+	"snd_jump_foliage"		"human_foliage_jump"
+
+	"snd_jump_cloth"		"human_carpet_jump"
+	"snd_jump_flesh"		"human_carpet_jump"
+	"snd_jump_moss"			"human_carpet_jump"
+
+
+
+        // default footstep for undefined materials
+  	"snd_footstep"					"tdm_footstep_stone_walk"
+
+
+	//these materials are outdated, but kept here in case older missions have unique materials that use them
+
+       "snd_footstep_mud"			"human_mud"
+      "snd_footstep_twigs"		"human_wood"
+	"snd_footstep_brokeglass"	"human_brokeglass"
+	"snd_footstep_squeakboard"	"human_squeakboard"
+
+
+    "snd_jump_mud"			"human_mud_jump"
+    "snd_jump_cardboard"	"human_carpet_jump"
+    "snd_jump_twigs"		"human_wood_jump"
+	"snd_jump_brokeglass"	"human_brokeglass_jump"
+
+	"snd_jump_squeakboard"	"human_squeakboard_jump"
+
+	"editor_snd sprs_footstep"	"Sound propagated to the AI the player makes a step on the specified surface. The optional number after the colon is a loudness modifier in DB."
+	"editor_snd sprs_jump"	"Sound propagated to the AI the player jumps on the specified surface. The optional number after the colon is a loudness modifier in DB."
+
+	// propagated sounds (default for materials that are not in the following list, same as stone)
+	/*"sprS_footstep"					"footstep_default_walk:-3.9"
+	"sprS_footstep_walk"			"footstep_default_walk:-3.9"
+	"sprS_footstep_run"				"footstep_default_run:0.9"
+	"sprS_footstep_creep"			"footstep_default_creep:-12"
+	"sprS_footstep_crouch_walk"		"footstep_default_walk:-9"
+	"sprS_footstep_crouch_run"  	"footstep_default_run:-7"
+	"sprS_footstep_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump"			            "footstep_default_jump:2.3"*/
+
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++
+          // Surface specific volumes
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    //  LOUDEST SURFACES
+
+    // metal surface
+	"sprS_footstep_metal"				"footstep_default_walk:1.6"
+	"sprS_footstep_metal_walk"			"footstep_default_walk:1.6"
+	"sprS_footstep_metal_run"			"footstep_default_run:5.5"
+	"sprS_footstep_metal_creep"			"footstep_default_creep:-7.9"
+	"sprS_footstep_metal_crouch_walk"	"footstep_default_walk:-2.9"
+	"sprS_footstep_metal_crouch_run"	"footstep_default_run:-1.5"
+	"sprS_footstep_metal_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_metal"                        "footstep_default_jump:6.4"
+
+    // puddle
+	"sprS_footstep_puddle"				"footstep_default_walk:2"
+	"sprS_footstep_puddle_walk"			"footstep_default_walk:2"
+	"sprS_footstep_puddle_run"			"footstep_default_run:5.5"
+	"sprS_footstep_puddle_creep"		"footstep_default_creep:-2"
+	"sprS_footstep_puddle_crouch_walk"	"footstep_default_walk:0"
+	"sprS_footstep_puddle_crouch_run"	"footstep_default_run:0"
+	"sprS_footstep_puddle_crouch_creep"	"footstep_default_creep:-9"
+   	"sprS_jump_puddle"      		    "footstep_default_jump:5.2"
+
+    // tile surface -
+	"sprS_footstep_tile"				"footstep_default_walk:1.0"
+	"sprS_footstep_tile_walk"			"footstep_default_walk:1.0"
+	"sprS_footstep_tile_run"			"footstep_default_run:4.5"
+	"sprS_footstep_tile_creep"			"footstep_default_creep:-8.5"
+	"sprS_footstep_tile_crouch_walk"	"footstep_default_walk:-2.4"
+	"sprS_footstep_tile_crouch_run"		"footstep_default_run:-2.5"
+	"sprS_footstep_tile_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_tile"        		    "footstep_default_jump:6.0"
+
+    // glass - same as tile
+	"sprS_footstep_glass"				"footstep_default_walk:1.0"
+	"sprS_footstep_glass_walk"			"footstep_default_walk:1.0"
+	"sprS_footstep_glass_run"			"footstep_default_run:4.5"
+	"sprS_footstep_glass_creep"			"footstep_default_creep:-8.5"
+	"sprS_footstep_glass_crouch_walk"	"footstep_default_walk:-2.4"
+	"sprS_footstep_glass_crouch_run"		"footstep_default_run:-2.5"
+	"sprS_footstep_glass_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_glass"        		    "footstep_default_jump:6.0"
+
+    // squeakboard -    //not supported
+	"sprS_footstep_squeakboard"				"footstep_default_walk:5.5"
+	"sprS_footstep_squeakboard_walk"			"footstep_default_walk:5.5"
+	"sprS_footstep_squeakboard_run"			"footstep_default_run:7.5"
+	"sprS_footstep_squeakboard_creep"			"footstep_default_creep:-4.0"
+	"sprS_footstep_squeakboard_crouch_walk"	"footstep_default_walk:-0.25"
+	"sprS_footstep_squeakboard_crouch_run"		"footstep_default_run:1.5"
+	"sprS_footstep_squeakboard_crouch_creep"	"footstep_default_creep:-13"
+   	"sprS_jump_squeakboard"        		    "footstep_default_jump:8.0"
+
+	// gravel
+	"sprS_footstep_gravel"				"footstep_default_walk:1"
+	"sprS_footstep_gravel_walk"			"footstep_default_walk:1"
+	"sprS_footstep_gravel_run"			"footstep_default_run:2"
+	"sprS_footstep_gravel_creep"		"footstep_default_creep:-5.7"
+	"sprS_footstep_gravel_crouch_walk"	"footstep_default_walk:-2"
+	"sprS_footstep_gravel_crouch_run"	"footstep_default_run:-4"
+	"sprS_footstep_gravel_crouch_creep"	"footstep_default_creep:-10"
+   	"sprS_jump_gravel"	        	    "footstep_default_jump:3.2"
+
+    // twigs
+	"sprS_footstep_twigs"				"footstep_default_walk:2"
+	"sprS_footstep_twigs_walk"			"footstep_default_walk:2"
+	"sprS_footstep_twigs_run"			"footstep_default_run:3.8"
+	"sprS_footstep_twigs_creep"		"footstep_default_creep:-5.7"
+	"sprS_footstep_twigs_crouch_walk"	"footstep_default_walk:-2"
+	"sprS_footstep_twigs_crouch_run"	"footstep_default_run:-3"
+	"sprS_footstep_twigs_crouch_creep"	"footstep_default_creep:-9"
+   	"sprS_jump_twigs"	        	    "footstep_default_jump:5.2"
+
+	// brokeglass - same as gravel
+	"sprS_footstep_brokeglass"				"footstep_default_walk:1"
+	"sprS_footstep_brokeglass_walk"			"footstep_default_walk:1"
+	"sprS_footstep_brokeglass_run"			"footstep_default_run:2"
+	"sprS_footstep_brokeglass_creep"		"footstep_default_creep:-5.7"
+	"sprS_footstep_brokeglass_crouch_walk"	"footstep_default_walk:-2"
+	"sprS_footstep_brokeglass_crouch_run"	"footstep_default_run:-4"
+	"sprS_footstep_brokeglass_crouch_creep"	"footstep_default_creep:-10"
+   	"sprS_jump_brokeglass"	        	    "footstep_default_jump:3.2"
+
+    // DEFAULT SURFACES
+
+        // wading
+	"sprS_footstep_wading"				"footstep_default_walk:-3"
+	"sprS_footstep_wading_walk"			"footstep_default_walk:-3"
+	"sprS_footstep_wading_run"			"footstep_default_run:5"
+	"sprS_footstep_wading_creep"		"footstep_default_creep:-9.5"
+	"sprS_footstep_wading_crouch_walk"	"footstep_default_walk:-6"
+	"sprS_footstep_wading_crouch_run"	"footstep_default_run:-8"
+	"sprS_footstep_wading_crouch_creep"	"footstep_default_creep:-16"
+   	"sprS_jump_wading"      		    "footstep_default_jump:3.2"
+
+    // ice
+	"sprS_footstep_ice"					"footstep_default_walk:-1.5"
+	"sprS_footstep_ice_walk"			"footstep_default_walk:-1.5"
+	"sprS_footstep_ice_run"				"footstep_default_run:-1.5"
+	"sprS_footstep_ice_creep"			"footstep_default_creep:-10"
+	"sprS_footstep_ice_crouch_walk"		"footstep_default_walk:-5.5"
+	"sprS_footstep_ice_crouch_run"		"footstep_default_run:-8.5"
+	"sprS_footstep_ice_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_ice"		                "footstep_default_jump:2.7"
+	
+    // wood surface -- slightly louder than stone
+	"sprS_footstep_wood"				"footstep_default_walk:-3.6"
+	"sprS_footstep_wood_walk"			"footstep_default_walk:-3.6"
+	"sprS_footstep_wood_run"			"footstep_default_run:1.2"
+	"sprS_footstep_wood_creep"			"footstep_default_creep:-11.7"
+	"sprS_footstep_wood_crouch_walk"	"footstep_default_walk:-7.7"
+	"sprS_footstep_wood_crouch_run"		"footstep_default_run:-6.7"
+	"sprS_footstep_wood_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_wood"		            "footstep_default_jump:2.3"
+
+   	// stone surface
+	"sprS_footstep_stone"				"footstep_default_walk:-3.9"
+	"sprS_footstep_stone_walk"			"footstep_default_walk:-3.9"
+	"sprS_footstep_stone_run"			"footstep_default_run:0.8"
+	"sprS_footstep_stone_creep"			"footstep_default_creep:-12"
+	"sprS_footstep_stone_crouch_walk"	"footstep_default_walk:-7.9"
+	"sprS_footstep_stone_crouch_run"	"footstep_default_run:-7"
+	"sprS_footstep_stone_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_stone"		            "footstep_default_jump:2"
+
+    // armor_plate - same as stone
+	"sprS_footstep_armor_plate"					"footstep_default_walk:-3.9"
+	"sprS_footstep_armor_plate_walk"			"footstep_default_walk:-3.9"
+	"sprS_footstep_armor_plate_run"				"footstep_default_run:0.8"
+	"sprS_footstep_armor_plate_creep"			"footstep_default_creep:-12"
+	"sprS_footstep_armor_plate_crouch_walk"		"footstep_default_walk:-7.9"
+	"sprS_footstep_armor_plate_crouch_run"		"footstep_default_run:-7"
+	"sprS_footstep_armor_plate_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_armor_plate"         		    "footstep_default_jump:2"
+
+
+
+	// foliage
+	"sprS_footstep_foliage"					"footstep_default_walk:-3.3"
+	"sprS_footstep_foliage_walk"			"footstep_default_walk:-3.3"
+	"sprS_footstep_foliage_run"				"footstep_default_run:-1.5"
+	"sprS_footstep_foliage_creep"			"footstep_default_creep:-9.3"
+	"sprS_footstep_foliage_crouch_walk"		"footstep_default_walk:-4.3"
+	"sprS_footstep_foliage_crouch_run"		"footstep_default_run:-8.5"
+	"sprS_footstep_foliage_crouch_creep"	"footstep_default_creep:-13"
+   	"sprS_jump_foliage"         		    "footstep_default_jump:0.3"
+
+    // QUIET SURFACES
+
+	// snow
+	"sprS_footstep_snow"				"footstep_default_walk:-6.3"
+	"sprS_footstep_snow_walk"			"footstep_default_walk:-6.3"
+	"sprS_footstep_snow_run"			"footstep_default_run:-4.5"
+	"sprS_footstep_snow_creep"			"footstep_default_creep:-14"
+	"sprS_footstep_snow_crouch_walk"	"footstep_default_walk:-9.3"
+	"sprS_footstep_snow_crouch_run"		"footstep_default_run:-8.5"
+	"sprS_footstep_snow_crouch_creep"	"footstep_default_creep:-16"
+   	"sprS_jump_snow"		            "footstep_default_jump:-3.3"
+
+    // dirt
+	"sprS_footstep_dirt"				"footstep_default_walk:-6.3"
+	"sprS_footstep_dirt_walk"			"footstep_default_walk:-6.3"
+	"sprS_footstep_dirt_run"			"footstep_default_run:-4.5"
+	"sprS_footstep_dirt_creep"			"footstep_default_creep:-13.3"
+	"sprS_footstep_dirt_crouch_walk"	"footstep_default_walk:-10.3"
+	"sprS_footstep_dirt_crouch_run"		"footstep_default_run:-9"
+	"sprS_footstep_dirt_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_dirt"	        	    "footstep_default_jump:-3.3"
+
+	// sand
+	"sprS_footstep_sand"				"footstep_default_walk:-6.5"
+	"sprS_footstep_sand_walk"			"footstep_default_walk:-6.5"
+	"sprS_footstep_sand_run"			"footstep_default_run:-4.5"
+	"sprS_footstep_sand_creep"			"footstep_default_creep:-15"
+	"sprS_footstep_sand_crouch_walk"	"footstep_default_walk:-10.5"
+	"sprS_footstep_sand_crouch_run"		"footstep_default_run:-8.5"
+	"sprS_footstep_sand_crouch_creep"	"footstep_default_creep:-16"
+   	"sprS_jump_sand"	        	    "footstep_default_jump:-4.5"
+
+    // straw
+	"sprS_footstep_straw"				"footstep_default_walk:-6"
+	"sprS_footstep_straw_walk"			"footstep_default_walk:-6"
+	"sprS_footstep_straw_run"			"footstep_default_run:-5"
+	"sprS_footstep_straw_creep"			"footstep_default_creep:-11"
+	"sprS_footstep_straw_crouch_walk"	"footstep_default_walk:-10"
+	"sprS_footstep_straw_crouch_run"	"footstep_default_run:-8.5"
+	"sprS_footstep_straw_crouch_creep"	"footstep_default_creep:-15"
+   	"sprS_jump_straw"       		    "footstep_default_jump:-3.8"
+
+   	// armor_chain
+	"sprS_footstep_armor_chain"					"footstep_default_walk:-6.3"
+	"sprS_footstep_armor_chain_walk"			"footstep_default_walk:-6.3"
+	"sprS_footstep_armor_chain_run"				"footstep_default_run:-4.5"
+	"sprS_footstep_armor_chain_creep"			"footstep_default_creep:-15"
+	"sprS_footstep_armor_chain_crouch_walk"		"footstep_default_walk:-10.5"
+	"sprS_footstep_armor_chain_crouch_run"		"footstep_default_run:-8.5"
+	"sprS_footstep_armor_chain_crouch_creep"	"footstep_default_creep:-16"
+   	"sprS_jump_armor_chain"         		    "footstep_default_jump:-3.3"
+
+	// grass
+	"sprS_footstep_grass"				"footstep_default_walk:-8.1"
+	"sprS_footstep_grass_walk"			"footstep_default_walk:-8.1"
+	"sprS_footstep_grass_run"			"footstep_default_run:-6"
+	"sprS_footstep_grass_creep"			"footstep_default_creep:-16"
+	"sprS_footstep_grass_crouch_walk"	"footstep_default_walk:-11.1"
+	"sprS_footstep_grass_crouch_run"	"footstep_default_run:-10"
+	"sprS_footstep_grass_crouch_creep"	"footstep_default_creep:-18"
+   	"sprS_jump_grass"	                "footstep_default_jump:-3.8"
+
+	// mud -
+	"sprS_footstep_mud"					"footstep_default_walk:-7.5"
+	"sprS_footstep_mud_walk"			"footstep_default_walk:-7.5"
+	"sprS_footstep_mud_run"				"footstep_default_run:-5"
+	"sprS_footstep_mud_creep"			"footstep_default_creep:-15"
+	"sprS_footstep_mud_crouch_walk"		"footstep_default_walk:-10.5"
+	"sprS_footstep_mud_crouch_run"		"footstep_default_run:-9"
+	"sprS_footstep_mud_crouch_creep"	"footstep_default_creep:-18"
+   	"sprS_jump_mud"         		    "footstep_default_jump:-3.8"
+
+	// carpet - very quiet
+	"sprS_footstep_carpet"				"footstep_default_walk:-12"
+	"sprS_footstep_carpet_walk"			"footstep_default_walk:-12"
+	"sprS_footstep_carpet_run"			"footstep_default_run:-9"
+	"sprS_footstep_carpet_creep"		"footstep_default_creep:-20"
+	"sprS_footstep_carpet_crouch_walk"	"footstep_default_walk:-15"
+	"sprS_footstep_carpet_crouch_run"	"footstep_default_run:-13"
+	"sprS_footstep_carpet_crouch_creep"	"footstep_default_creep:-23"
+   	"sprS_jump_carpet"          	    "footstep_default_jump:-7.8"
+
+	// cloth - same as carpet
+	"sprS_footstep_cloth"				"footstep_default_walk:-12"
+	"sprS_footstep_cloth_walk"			"footstep_default_walk:-12"
+	"sprS_footstep_cloth_run"			"footstep_default_run:-9"
+	"sprS_footstep_cloth_creep"			"footstep_default_creep:-20"
+	"sprS_footstep_cloth_crouch_walk"	"footstep_default_walk:-15"
+	"sprS_footstep_cloth_crouch_run"	"footstep_default_run:-13"
+	"sprS_footstep_cloth_crouch_creep"	"footstep_default_creep:-23"
+   	"sprS_jump_cloth"       		    "footstep_default_jump:-7.8"
+
+	// leather armor
+	"sprS_footstep_armor_leath"					"footstep_default_walk:-12"
+	"sprS_footstep_armor_leath_walk"			"footstep_default_walk:-12"
+	"sprS_footstep_armor_leath_run"				"footstep_default_run:-9"
+	"sprS_footstep_armor_leath_creep"			"footstep_default_creep:-18"
+	"sprS_footstep_armor_leath_crouch_walk"		"footstep_default_walk:-15"
+	"sprS_footstep_armor_leath_crouch_run"		"footstep_default_run:-13"
+	"sprS_footstep_armor_leath_crouch_creep"	"footstep_default_creep:-20"
+   	"sprS_jump_armor_leath"         		    "footstep_default_jump:-7.8"
+
+	// flesh
+	"sprS_footstep_flesh"				"footstep_default_walk:-12"
+	"sprS_footstep_flesh_walk"			"footstep_default_walk:-12"
+	"sprS_footstep_flesh_run"			"footstep_default_run:-9"
+	"sprS_footstep_flesh_creep"			"footstep_default_creep:-18"
+	"sprS_footstep_flesh_crouch_walk"	"footstep_default_walk:-15"
+	"sprS_footstep_flesh_crouch_run"	"footstep_default_run:-13"
+	"sprS_footstep_flesh_crouch_creep"	"footstep_default_creep:-20"
+   	"sprS_jump_flesh"       		    "footstep_default_jump:-7.8"
+
+    // paper - same as carpet
+	"sprS_footstep_paper"				"footstep_default_walk:-12"
+	"sprS_footstep_paper_walk"			"footstep_default_walk:-12"
+	"sprS_footstep_paper_run"			"footstep_default_run:-9"
+	"sprS_footstep_paper_creep"			"footstep_default_creep:-18"
+	"sprS_footstep_paper_crouch_walk"	"footstep_default_walk:-15"
+	"sprS_footstep_paper_crouch_run"	"footstep_default_run:-13"
+	"sprS_footstep_paper_crouch_creep"	"footstep_default_creep:-20"
+   	"sprS_jump_paper"       		    "footstep_default_jump:-7.8"
+	
+	// moss - quieter than carpet
+	"sprS_footstep_moss"				"footstep_default_walk:-16"
+	"sprS_footstep_moss_walk"			"footstep_default_walk:-16"
+	"sprS_footstep_moss_run"			"footstep_default_run:-10"
+	"sprS_footstep_moss_creep"			"footstep_default_creep:-21"
+	"sprS_footstep_moss_crouch_walk"	"footstep_default_walk:-19"
+	"sprS_footstep_moss_crouch_run"		"footstep_default_run:-14"
+	"sprS_footstep_moss_crouch_creep"	"footstep_default_creep:-24"
+   	"sprS_jump_moss"        		    "footstep_default_jump:-8.8"
+
+	// grayman #3413 - swimming
+
+	"sprS_decompress"					"decompress" // submerging
+	"sprS_recompress"					"recompress" // surfacing
+
+        //swimming at the surface could make noticable sounds
+        "sprS_swim_burst_run"				"footstep_default_run:-1"
+	"sprS_swim_burst_walk"				"footstep_default_walk:-6"
+	"sprS_swim_burst_creep"				"footstep_default_creep:-9"
+
+
+
+
+
+	// water particles
+	"snd_water"							"splash_long_01"
+	"smoke_water"						"water_splash_large"
+
+	// The heal response
+	"sr_class_1"					"R"
+	"sr_type_1"						"STIM_HEALING"
+	"sr_state_1"					"1"
+	
+	// Effect: Heal the player
+	"sr_effect_1_1"					"effect_heal"
+	"sr_effect_1_1_arg1"			"_SELF"
+	"sr_effect_1_1_arg2"			"heal_generic" // SND_CHANNEL_VOICE
+	"sr_effect_1_1_arg3"			"snd_player_sigh"	// the sound shader
+
+	// The damage response
+	"sr_class_2"					"R"
+	"sr_type_2"						"STIM_DAMAGE"
+	"sr_state_2"					"1"
+	"sr_effect_2_1"					"effect_damage"
+	"sr_effect_2_1_arg1"			"_SELF"
+	"sr_effect_2_1_arg2"			"atdm:damage_low"
+	
+	// The "Thief" stim
+	"sr_class_3"					"S"
+	"sr_type_3"						"STIM_PLAYER"
+	"sr_state_3"					"1"
+	"sr_radius_3"					"350"
+	"sr_falloffexponent_3"			"1"
+	"sr_magnitude_3"				"1"
+	"sr_time_interval_3"			"1500"
+
+	// The damage response
+	"sr_class_4"					"R"
+	"sr_type_4"						"STIM_DAMAGE"
+	"sr_state_4"					"1"
+	"sr_effect_4_1"					"effect_damage"
+	"sr_effect_4_1_arg1"			"_SELF"
+	"sr_effect_4_1_arg2"			"atdm:damage_low"
+}
+
+entityDef atdm:player_thief
+{
+	"inherit"							"atdm:player_base"
+	"model"								"model_player_thief"
+	"ragdoll"							"guard_base"
+	
+	"mass"								"70"
+
+	"editor_displayFolder"				"Internal"
+
+	// replace with player entering/leaving water sounds (taking a deep breath / letting out maybe?)
+	//"snd_decompress"					"splash_long_01"
+	"snd_decompress"					"splash_subtle_01" // grayman #3413
+	"snd_recompress"					"splash_subtle_01"
+	"snd_airless"						"underwater"
+
+    "def_head"						"atdm:ai_head_thief_player"
+	"head_joint"					"Head"
+         "offsetHeadModel"         "0 0 -7"
+
+        
+
+	//"copy_joint neckcontrol"			"neckcontrol"
+	//"copy_joint headcontrol"			"headcontrol"
+	//"copy_joint_world eyecontrol"		"eyecontrol"
+
+	// Player is always on team 0
+	"team"								"0"
+}
+
+
+
+entityDef atdm:ai_head_thief_player
+{
+	"inherit"	"atdm:ai_head_base"
+	"model"		"head_thief"
+
+	"scriptobject"					"tdm_player_head"
+
+	// greebo: Add the GAS response to the thief's head, this will be 
+	// targetted at the Thief entity itself as AF attachments redirect responses to their body
+	"sr_class_4"					"R"
+	"sr_type_4"					"STIM_GAS"
+	"sr_state_4"					"1"
+
+	// Use a custom script function for the player's gas effect
+	"sr_script_STIM_GAS"				"responseToGasStim"
+
+	// Effect: damage the player, additional to the response script
+	"sr_effect_4_1"				"effect_damage"
+	"sr_effect_4_1_arg1"			"_SELF"
+	"sr_effect_4_1_arg2"			"atdm:damage_simple"
+}
+
+entityDef info_player_start
+{
+	"spawnclass"				"idPlayerStart"
+
+	"editor_color"				"1 0 0"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 64"
+	"editor_showangle"			"1"
+
+	"editor_usage"				"The spawning position for the player."
+	"editor_var skin"			"Skin to use for player model."
+}
+
+// Used to teleport the player after a cinematic
+entityDef info_player_teleport
+{
+	"editor_color"				"1 0.2 0.1"
+	"editor_mins"				"-16 -16 0"
+	"editor_maxs"				"16 16 64"
+	"editor_showangle"			"1"
+
+	"editor_usage"				"Spawning position player after cinematic.  When triggered, player will be moved to this location."
+	"editor_float push"			"How much of a push to give to the player when he is teleported."
+	"editor_var visualView"		"Camera to set player's view to when he is teleported."
+	"editor_float visualEffect"	"How long to show the view from the visualView."
+
+	"spawnclass"				"idPlayerStart"
+	
+	"push"						"300"
+	"visualEffect"				"0"
+	"visualView"				""
+}

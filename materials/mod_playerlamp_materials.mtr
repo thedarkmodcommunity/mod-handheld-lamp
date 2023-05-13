@@ -1,0 +1,14 @@
+lights/mod_mtr_playerlamp_light
+{
+	lightFalloffImage	makeintensity( textures/lights/mod_playerlamp_gradient )
+	{
+		forceHighQuality
+		map		textures/lights/mod_playerlamp_spot.tga
+		colored
+		zeroClamp
+		red		((.02 * sintable [(time * ( 1 + Parm3 ) ) ]) +.98) * Parm0
+		green	((.02 * sintable [(time * ( 1 + Parm3 ) ) ]) +.98) * Parm1
+		blue	((.02 * sintable [(time * ( 1 + Parm3 ) ) ]) +.98) * Parm2
+	}
+
+}

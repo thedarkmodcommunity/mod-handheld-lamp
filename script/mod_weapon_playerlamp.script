@@ -1,0 +1,110 @@
+/*****************************************************************************
+The Dark Mod GPL Source Code
+
+This file is part of the The Dark Mod Source Code, originally based
+on the Doom 3 GPL Source Code as published in 2011.
+
+The Dark Mod Source Code is free software: you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version. For details, see LICENSE.TXT.
+
+Project: The Dark Mod (http://www.thedarkmod.com/)
+
+******************************************************************************/
+
+#ifndef __MOD_WEAPON_PLAYERLAMP__
+#define __MOD_WEAPON_PLAYERLAMP__
+
+/**
+NOTE these scripts can be and have been overridden by player FMs. Do an
+existing map check if amending them.
+**/
+
+// blend times
+#define LANTERN_IDLE_TO_LOWER	4
+#define LANTERN_RAISE_TO_IDLE	4
+
+object mod_weapon_playerlamp : weapon_base
+{
+	void		init();
+
+	void		Lower();
+	void		Raise();
+	void		Idle();
+	void		Attack();
+	void		Block();
+	void		ExitCinematic();
+};
+
+void mod_weapon_playerlamp::init()
+{
+	weaponState( "Raise", 0 );
+}
+
+void mod_weapon_playerlamp::Raise()
+{
+	weaponRising();
+//	playAnim( ANIMCHANNEL_ALL, "raise" );
+//	waitUntil( animDone( ANIMCHANNEL_ALL, LANTERN_RAISE_TO_IDLE ) );
+	weaponState( "Idle", LANTERN_RAISE_TO_IDLE );
+}
+
+void mod_weapon_playerlamp::Lower()
+{
+	weaponLowering();
+	playAnim( ANIMCHANNEL_ALL, "putaway" );
+	waitUntil( animDone( ANIMCHANNEL_ALL, LANTERN_IDLE_TO_LOWER ) );
+	weaponHolstered();
+	waitUntil( WEAPON_RAISEWEAPON );
+	weaponState( "Raise", 0 );
+}
+
+void mod_weapon_playerlamp::Idle()
+{
+	playAnim( ANIMCHANNEL_ALL, "idle" );
+
+//	$playerlamp_light.On();
+	/*$playerlamp_haze.show();*/
+
+	while( !animIsPaused( ANIMCHANNEL_ALL ) )
+	{
+		waitFrame();
+	}
+
+	weaponReady();
+
+	while( !WEAPON_LOWERWEAPON )
+	{
+
+// test
+//		if ( WEAPON_ATTACK )
+//			$playerlamp_light.Off();
+
+		waitFrame();
+	}
+
+//	$playerlamp_light.Off();
+	/*$playerlamp_haze.hide();*/
+
+	pauseAnim( ANIMCHANNEL_ALL, 0 );
+
+	Lower();
+}
+
+void mod_weapon_playerlamp::Attack()
+{
+	return;
+}
+
+void mod_weapon_playerlamp::Block()
+{
+	return;
+}
+
+void mod_weapon_playerlamp::ExitCinematic()
+{
+	weaponState( "Idle", 0 );
+}
+
+#endif //__MOD_WEAPON_PLAYERLAMP__
