@@ -19,10 +19,10 @@ entityDef mod:weapon_playerlamp
     "inv_name"              "Oil Lamp"
     "inv_icon"              "guis/assets/hud/weapon_icons/mod_playerlamp_icon.dds"
 
-    "model"                 ""
+    "model"                 "models/darkmod/weapons/mod_playerlamp_model.lwo"
     "clipmodel"	            ""
     "spawnclass"            "idMoveable"
-    "frobable"              "0"
+    "frobable"              "1"
 
 	"is_weapon_melee"		"0"
 	"is_weapon_ranged"		"0"
