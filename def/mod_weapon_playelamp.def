@@ -19,10 +19,12 @@ entityDef mod:weapon_playerlamp
     "inv_name"              "Oil Lamp"
     "inv_icon"              "guis/assets/hud/weapon_icons/mod_playerlamp_icon.dds"
 
-    "model"                 ""
+    "model"                 "models/darkmod/weapons/mod_playerlamp_model.lwo"
     "clipmodel"	            ""
     "spawnclass"            "idMoveable"
-    "frobable"              "0"
+    "frobable"              "1"
+
+	"snd_acquire"			"tool_pickup"
 
 	"is_weapon_melee"		"0"
 	"is_weapon_ranged"		"0"
@@ -33,10 +35,6 @@ entityDef mod:weapon_playerlamp
 	"inv_lgmodifier"		"25"
 
     "weapon_scriptobject"   "mod_weapon_playerlamp"
-
-    // Attachment entity for melee combat
-	"def_attach1"			"mod:attachment_playerlamp"
-	"name_attach1"			"meleeweap_r"
 }
 
 model mod:viewmodel_lantern
@@ -46,13 +44,14 @@ model mod:viewmodel_lantern
 
 	anim idle	models/md5/weapons/mod_playerlamp/idle.md5anim
 	{
+		frame 1 	attach mod:attachment_playerlamp hand_r
 		frame 1		sound_weapon blackjack_sheath
 		frame 12	melee_hold
 	}
 
 	anim putaway   models/md5/weapons/mod_playerlamp/putaway.md5anim
 	{
-		frame 1		sound_weapon blackjack_sheath
+		frame 1		sound_weapon blackjack_unsheath
 	}
 }
 

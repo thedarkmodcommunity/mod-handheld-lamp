@@ -28,7 +28,7 @@ Project: The Dark Mod (http://www.thedarkmod.com/)
 
 void user_addon_init()
 {
-	entity handheld_lantern	= sys.spawn("mod:weapon_playerlamp");
-	sys.waitFrame();
-	$player1.addInvItem(handheld_lantern);
+//	entity handheld_lantern	= sys.spawn("mod:weapon_playerlamp");
+//	sys.waitFrame();
+//	$player1.addInvItem(handheld_lantern);
 }
