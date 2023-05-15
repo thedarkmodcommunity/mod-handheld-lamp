@@ -45,8 +45,6 @@ void mod_weapon_playerlamp::init()
 void mod_weapon_playerlamp::Raise()
 {
 	weaponRising();
-//	playAnim( ANIMCHANNEL_ALL, "raise" );
-//	waitUntil( animDone( ANIMCHANNEL_ALL, LANTERN_RAISE_TO_IDLE ) );
 	weaponState( "Idle", LANTERN_RAISE_TO_IDLE );
 }
 
@@ -64,9 +62,6 @@ void mod_weapon_playerlamp::Idle()
 {
 	playAnim( ANIMCHANNEL_ALL, "idle" );
 
-//	$playerlamp_light.On();
-	/*$playerlamp_haze.show();*/
-
 	while( !animIsPaused( ANIMCHANNEL_ALL ) )
 	{
 		waitFrame();
@@ -77,15 +72,13 @@ void mod_weapon_playerlamp::Idle()
 	while( !WEAPON_LOWERWEAPON )
 	{
 
-// test
 //		if ( WEAPON_ATTACK )
-//			$playerlamp_light.Off();
+//		{
+//			We can turn on/off the light or whatever we want here
+//		}
 
 		waitFrame();
 	}
-
-//	$playerlamp_light.Off();
-	/*$playerlamp_haze.hide();*/
 
 	pauseAnim( ANIMCHANNEL_ALL, 0 );
 

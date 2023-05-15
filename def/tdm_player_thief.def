@@ -168,7 +168,6 @@ entityDef atdm:player_base {
 	//"pm_crouchspeed"					"80"
 	"pm_walkspeed"						"60"
 	//"pm_runspeed"						"220"
-	"pm_noclipspeed"					"200"
 	"pm_minviewpitch"					"-89"	// looking up
 	"pm_maxviewpitch"					"89"	// looking down
 	"pm_crouchheight"				"38"
@@ -189,14 +188,7 @@ entityDef atdm:player_base {
       
 	// movement settings
 
-	"pm_bobroll" 				"0.0015" //side to side roll
-	"pm_bobpitch" 				"0.001" //forward roll
-	"pm_bobup" 					"0.03"  //upward bounce
-	"pm_runroll" 				"0.003" //running side roll
-	"pm_runpitch" 				"0.001" //run forward pitch
-	"pm_runbob" 				"0.35" //speed of run bob
-	"pm_walkbob" 				"0.3" //speed of walk bob
-	"pm_crouchbob" 				"0.2"	//speed of crouch bob
+	// nbohr1more: I have removed pm_* cvars. Now that the cvars are archived, the default settings persist via code and players can change them if needed.
 	
 	"pm_modelview"					"0"	// 0 == normal, 1 == view inside model, 2 == view inside model when dead
 	"pm_usecylinder"				"1"  	// 0 == default, 1 == use cylinder approximation for bounding box.  Needed for Dark Mod
