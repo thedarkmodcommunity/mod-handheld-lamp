@@ -20,5 +20,5 @@ Goldwell
 Snatcher
 
 ## Download
-Download v0.1 [here](https://github.com/thedarkmodcommunity/mod-handheld-lamp/releases/download/v0.1/z_handheld_lamp_v0.1.pk4)
+Download the .pk4 from the [releases](https://github.com/thedarkmodcommunity/mod-handheld-lamp/releases) page
 
